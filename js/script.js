@@ -1,42 +1,10 @@
-function toggleMenu() {
-  const nav = document.getElementById("navLinks");
-  nav.classList.toggle("active");
-}
-
-function validateForm() {
-  let name = document.getElementById("name").value;
-  let email = document.getElementById("email").value;
-  let message = document.getElementById("message").value;
-
-  if (name === "" || email === "" || message === "") {
-    alert("Semua field harus diisi!");
-    return false;
-  }
-  alert("Pesan berhasil dikirim!");
-  return true;
-}
-const searchInput = document.getElementById('mainSearch');
-const resultsBox = document.getElementById('searchResults');
-
-const siteData = [
-    { title: "Home Page", link: "index.html" },
-    { title: "About Ahmad", link: "about.html" },
-    { title: "Web Design Services", link: "services.html" },
-    { title: "My Portfolio Projects", link: "portfolio.html" },
-    { title: "Contact Me", link: "contact.html" }
-];
-
-searchInput.addEventListener('input', (e) => {
-    let v = e.target.value;
-    if(v.length > 0) {
-        resultsBox.style.display = 'block';
-        // تصفية النتائج بناءً على ما يكتبه المستخدم
-        let matches = siteData.filter(item => item.title.includes(v));
-        
-        resultsBox.innerHTML = matches.map(item => 
-            `<div class="result-item" onclick="location.href='${item.link}'">${item.title}</div>`
-        ).join('');
-    } else {
-        resultsBox.style.display = 'none';
-    }
-});
+const toggle = document.querySelector('.menu-toggle');
+const navigation = document.querySelector('#navigation');
+function closeMenu() { navigation?.classList.remove('is-open'); toggle?.setAttribute('aria-expanded', 'false'); }
+toggle?.addEventListener('click', () => { const open = toggle.getAttribute('aria-expanded') !== 'true'; toggle.setAttribute('aria-expanded', String(open)); navigation.classList.toggle('is-open', open); });
+document.addEventListener('keydown', event => { if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') { closeMenu(); toggle.focus(); } });
+document.addEventListener('click', event => { if (!event.target.closest('.header')) closeMenu(); });
+const currentPage = location.pathname.split('/').pop() || 'index.html';
+document.querySelectorAll('nav a').forEach(link => { if (link.getAttribute('href') === currentPage) link.setAttribute('aria-current', 'page'); link.addEventListener('click', closeMenu); });
+document.querySelectorAll('[data-year]').forEach(el => { el.textContent = new Date().getFullYear(); });
+document.querySelector('#contact-form')?.addEventListener('submit', event => { event.preventDefault(); const form = event.currentTarget; if (!form.reportValidity()) return; const data = new FormData(form); const message = `Hello Ahmad, I'm ${String(data.get('name')).trim()}.\nEmail: ${String(data.get('email')).trim()}\n\n${String(data.get('message')).trim()}`; window.location.href = 'https://wa.me/6282296861147?text=' + encodeURIComponent(message); });
